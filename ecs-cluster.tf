@@ -1,11 +1,11 @@
 ### ECS
 
 resource "aws_ecs_cluster" "ecs-cluster" {
-  name = "hello-world"
+  name = "springboot-cluster"
 }
 
 resource "aws_ecs_task_definition" "task-definition" {
-  family                   = "hellworld-blue-task-definition"
+  family                   = "springboot-task-definition"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = 256
@@ -15,15 +15,15 @@ resource "aws_ecs_task_definition" "task-definition" {
 [
   {
     "cpu": 1,
-    "image": "653308993752.dkr.ecr.us-west-1.amazonaws.com/springboot-ecr:v_8",
+    "image": "${var.docker-image}",
     "memory": 2048,
-    "name": "helloworld-application",
+    "name": "springboot-application",
     "networkMode": "awsvpc",
     "portMappings": [
       {
         "protocol"	: "tcp",
-        "containerPort"	: 8080,
-        "hostPort"	: 8080
+        "containerPort"	: var.container-port,
+        "hostPort"	: var.container-port
       }
     ]
   }
@@ -32,7 +32,7 @@ DEFINITION
 }
 
 resource "aws_ecs_service" "ecs-service" {
-  name            = "helloworld-service"
+  name            = "springboot-service"
   cluster         = aws_ecs_cluster.ecs-cluster.id
   task_definition = aws_ecs_task_definition.task-definition.arn
   desired_count   = 1
@@ -46,10 +46,10 @@ resource "aws_ecs_service" "ecs-service" {
   }
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.blue-sg.arn
-    container_name   = "helloworld-application"
-    container_port   = 8080
+    target_group_arn = aws_alb_target_group.springboot-sg.arn
+    container_name   = "springboot-application"
+    container_port   = var.container-port
   }
 
-  depends_on = [aws_alb_listener.blue_deploy]
+  depends_on = [aws_alb_listener.springboot_deploy]
 }
