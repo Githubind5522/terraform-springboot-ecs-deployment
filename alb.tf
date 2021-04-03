@@ -14,7 +14,7 @@ resource "aws_alb_target_group" "blue-sg" {
 
 resource "aws_alb_target_group" "green-sg" {
   name        = "helloworld-green-tg"
-  port        = "8080"
+  port        = "80"
   protocol    = "HTTP"
   vpc_id      = data.aws_vpc.default.id
   target_type = "ip"
@@ -35,7 +35,7 @@ resource "aws_alb_listener" "blue_deploy" {
 # Redirect all traffic from the ALB to the green target group
 resource "aws_alb_listener" "green_deploy" {
   load_balancer_arn = aws_alb.ecs-alb.id
-  port              = "8080"
+  port              = "80"
   protocol          = "HTTP"
 
   default_action {
