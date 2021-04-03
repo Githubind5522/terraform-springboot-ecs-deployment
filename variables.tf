@@ -1,6 +1,6 @@
 variable "docker-image" {
   type = string
-  default = "653308993752.dkr.ecr.us-west-1.amazonaws.com/springboot-ecr:v_8"
+  default = "653308993752.dkr.ecr.us-west-1.amazonaws.com/springboot-ecr:latest"
 }
 
 variable "container-port" {
